@@ -2,6 +2,7 @@ import { useState } from "react";
 import { move } from "@dnd-kit/helpers";
 import { DragDropProvider } from "@dnd-kit/react";
 
+import AddColumn from "./add-column";
 import KanbanCard from "./card";
 import KanbanColumn from "./column";
 import type { Items } from "./types";
@@ -43,6 +44,10 @@ const initialData: Items = {
 export default function KanbanBoard() {
   const [items, setItems] = useState(initialData);
 
+  const handleAddColumn = (title: string) => {
+    setItems({ ...items, [title]: [] });
+  };
+
   return (
     <DragDropProvider
       onDragOver={(event) => {
@@ -71,6 +76,8 @@ export default function KanbanBoard() {
           ))}
         </KanbanColumn>
       ))}
+
+      <AddColumn onAdd={handleAddColumn} />
     </DragDropProvider>
   );
 }
