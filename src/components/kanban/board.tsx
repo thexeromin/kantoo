@@ -48,6 +48,15 @@ export default function KanbanBoard() {
     setItems({ ...items, [title]: [] });
   };
 
+  const handleDeleteColumn = (title: string) => {
+    console.log({ title });
+    setItems((prev) => {
+      // eslint-disable-next-line
+      const { [title]: _, ...rest } = prev;
+      return rest;
+    });
+  };
+
   return (
     <DragDropProvider
       onDragOver={(event) => {
@@ -64,6 +73,7 @@ export default function KanbanBoard() {
           id={column}
           index={index}
           totalTask={items.length}
+          onDelete={handleDeleteColumn}
         >
           {items.map((task, index) => (
             <KanbanCard

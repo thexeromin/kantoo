@@ -1,18 +1,31 @@
 import React from "react";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
+import { EllipsisIcon } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
 
 interface Props {
   id: string;
   index: number;
   children: React.ReactNode;
   totalTask: number;
+  onDelete: (title: string) => void;
 }
 
 export default function KanbanColumn({
   id,
   index,
   totalTask,
+  onDelete,
   children
 }: Props) {
   const { ref } = useSortable({
@@ -30,9 +43,27 @@ export default function KanbanColumn({
     >
       <div className="mb-4 flex items-center justify-between">
         <h3 className="font-semibold text-slate-700 dark:text-white">{id}</h3>
-        <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600 dark:bg-gray-700 dark:text-gray-200">
-          {totalTask}
-        </span>
+
+        <div className="flex items-center justify-between gap-1">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600 dark:bg-gray-700 dark:text-gray-200">
+            {totalTask}
+          </span>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" size="icon">
+                <EllipsisIcon />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuGroup>
+                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                <DropdownMenuItem onClick={() => onDelete(id)}>
+                  Delete
+                </DropdownMenuItem>
+              </DropdownMenuGroup>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
       </div>
 
       <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-1">
