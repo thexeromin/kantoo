@@ -1,4 +1,6 @@
 import { useSortable } from "@dnd-kit/react/sortable";
+import { TrashIcon } from "lucide-react";
+import { Button } from "@/components/ui/button";
 
 import type { Task } from "./types";
 
@@ -7,9 +9,16 @@ interface Props {
   index: number;
   column: string;
   task: Task;
+  onDelete: (taskId: number, columnId: string) => void;
 }
 
-export default function KanbanCard({ id, index, column, task }: Props) {
+export default function KanbanCard({
+  id,
+  index,
+  column,
+  task,
+  onDelete
+}: Props) {
   const { ref, isDragging } = useSortable({
     id,
     index,
@@ -27,17 +36,26 @@ export default function KanbanCard({ id, index, column, task }: Props) {
                  hover:shadow-md hover:ring-blue-400 active:cursor-grabbing
                  dark:bg-slate-700 dark:ring-slate-600 dark:hover:ring-blue-500"
     >
-      <div className="flex items-start justify-between">
-        <h4 className="font-medium text-slate-700 dark:text-white">
-          {task.title}
-        </h4>
-      </div>
+      <div className="flex items-start justify-between flex-row">
+        <div className="flex items-start justify-between flex-col">
+          <h4 className="font-medium text-slate-700 dark:text-white">
+            {task.title}
+          </h4>
 
-      {task.description && (
-        <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-300">
-          {task.description}
-        </p>
-      )}
+          {task.description && (
+            <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-300">
+              {task.description}
+            </p>
+          )}
+        </div>
+        <Button
+          onClick={() => onDelete(task.id, column)}
+          variant="ghost"
+          size="icon"
+        >
+          <TrashIcon />
+        </Button>
+      </div>
     </div>
   );
 }

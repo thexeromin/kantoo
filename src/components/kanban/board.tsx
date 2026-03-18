@@ -49,7 +49,6 @@ export default function KanbanBoard() {
   };
 
   const handleDeleteColumn = (title: string) => {
-    console.log({ title });
     setItems((prev) => {
       // eslint-disable-next-line
       const { [title]: _, ...rest } = prev;
@@ -57,23 +56,25 @@ export default function KanbanBoard() {
     });
   };
 
+  const handleCardDelete = (taskId: number, columnId: string) => {
+    setItems((prev) => ({
+      ...prev,
+      [columnId]: prev[columnId].filter((x) => x.id !== taskId)
+    }));
+  };
+
   const handleAddCard = (title: string, id: string) => {
-    console.log(title, id);
-    setItems((prev) => {
-      const { [id]: targetKey, ...rest } = prev;
-      console.log(targetKey);
-      return {
-        ...rest,
-        targetKey: [
-          ...targetKey,
-          {
-            id: Math.floor(Math.random() * 1000000),
-            title: title,
-            description: title
-          }
-        ]
-      };
-    });
+    setItems((prev) => ({
+      ...prev,
+      [id as any]: [
+        ...prev[id],
+        {
+          id: crypto.randomUUID(),
+          title,
+          description: title
+        }
+      ]
+    }));
   };
 
   return (
@@ -102,6 +103,7 @@ export default function KanbanBoard() {
               index={index}
               column={column}
               task={task}
+              onDelete={handleCardDelete}
             />
           ))}
         </KanbanColumn>
