@@ -57,6 +57,25 @@ export default function KanbanBoard() {
     });
   };
 
+  const handleAddCard = (title: string, id: string) => {
+    console.log(title, id);
+    setItems((prev) => {
+      const { [id]: targetKey, ...rest } = prev;
+      console.log(targetKey);
+      return {
+        ...rest,
+        targetKey: [
+          ...targetKey,
+          {
+            id: Math.floor(Math.random() * 1000000),
+            title: title,
+            description: title
+          }
+        ]
+      };
+    });
+  };
+
   return (
     <DragDropProvider
       onDragOver={(event) => {
@@ -74,6 +93,7 @@ export default function KanbanBoard() {
           index={index}
           totalTask={items.length}
           onDelete={handleDeleteColumn}
+          onAddCard={handleAddCard}
         >
           {items.map((task, index) => (
             <KanbanCard

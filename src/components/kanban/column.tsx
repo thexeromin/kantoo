@@ -12,6 +12,7 @@ import {
   DropdownMenuLabel,
   DropdownMenuTrigger
 } from "@/components/ui/dropdown-menu";
+import AddCard from "./add-card";
 
 interface Props {
   id: string;
@@ -19,6 +20,7 @@ interface Props {
   children: React.ReactNode;
   totalTask: number;
   onDelete: (title: string) => void;
+  onAddCard: (title: string, id: string) => void;
 }
 
 export default function KanbanColumn({
@@ -26,6 +28,7 @@ export default function KanbanColumn({
   index,
   totalTask,
   onDelete,
+  onAddCard,
   children
 }: Props) {
   const { ref } = useSortable({
@@ -70,10 +73,11 @@ export default function KanbanColumn({
         {children}
 
         {totalTask === 0 && (
-          <div className="flex h-24 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-sm text-slate-400 dark:border-gray-600 dark:text-gray-500">
+          <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-sm text-slate-400 dark:border-gray-600 dark:text-gray-500">
             No tasks yet
           </div>
         )}
+        <AddCard onAdd={(t: string) => onAddCard(t, id)} />
       </div>
     </div>
   );
