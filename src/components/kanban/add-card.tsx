@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { Plus, X } from "lucide-react";
 
 interface Props {
-  onAdd: (title: string) => void;
+  onAdd: (data: string) => void;
 }
 
 export default function AddCard({ onAdd }: Props) {

@@ -1,9 +1,16 @@
-export interface Task {
-  id: number;
-  title: string;
-  description: string;
-}
+export type Card = {
+  id: string;
+  data: string;
+};
 
-export interface Items {
-  [key: string]: Task[];
-}
+export type Column = {
+  id: string;
+  title: string;
+  cardIds: string[];
+};
+
+export type Board = {
+  columns: Record<string, Column>;
+  columnOrder: string[];
+  cards: Record<string, Card>;
+};

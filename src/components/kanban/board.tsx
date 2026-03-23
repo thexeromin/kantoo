@@ -1,109 +1,94 @@
-import { useState } from "react";
-import { move } from "@dnd-kit/helpers";
+import { useImmer } from "use-immer";
 import { DragDropProvider } from "@dnd-kit/react";
+import { createId } from "@/utils";
+import { reorderColumns, moveCardBetweenColumns } from "@/utils/boardHelpers";
+
+import type { Board } from "./types";
 
 import AddColumn from "./add-column";
 import KanbanCard from "./card";
 import KanbanColumn from "./column";
-import type { Items } from "./types";
-
-const initialData: Items = {
-  todo: [
-    {
-      id: 111,
-      title: "Add drag and drop",
-      description: "Integrate a library for drag and drop features."
-    },
-    {
-      id: 112,
-      title: "Write unit tests",
-      description: "Write tests for core components and utilities."
-    }
-  ],
-  "in-progress": [
-    {
-      id: 114,
-      title: "Design database schema",
-      description: "Draft the ERD for the new authentication flow."
-    },
-    {
-      id: 116,
-      title: "Create Kanban UI",
-      description: "Build the base React components using Tailwind."
-    }
-  ],
-  done: [
-    {
-      id: 117,
-      title: "Set up project repository",
-      description: "Initialize git repo and project structure."
-    }
-  ]
-};
 
 export default function KanbanBoard() {
-  const [items, setItems] = useState(initialData);
+  const [board, setBoard] = useImmer<Board>({
+    columns: {},
+    columnOrder: [],
+    cards: {}
+  });
 
   const handleAddColumn = (title: string) => {
-    setItems({ ...items, [title]: [] });
-  };
+    const id = createId("col-");
 
-  const handleDeleteColumn = (title: string) => {
-    setItems((prev) => {
-      // eslint-disable-next-line
-      const { [title]: _, ...rest } = prev;
-      return rest;
+    setBoard((draft) => {
+      draft.columnOrder.push(id);
+      draft.columns[id] = {
+        id,
+        title,
+        cardIds: []
+      };
     });
   };
 
-  const handleCardDelete = (taskId: number, columnId: string) => {
-    setItems((prev) => ({
-      ...prev,
-      [columnId]: prev[columnId].filter((x) => x.id !== taskId)
-    }));
+  const handleDeleteColumn = (id: string) => {
+    // TODO: remove the cards associated with this column
+    setBoard((draft) => {
+      delete draft.columns[id];
+      draft.columnOrder = draft.columnOrder.filter((x) => x !== id);
+    });
   };
 
-  const handleAddCard = (title: string, id: string) => {
-    setItems((prev) => ({
-      ...prev,
-      [id as any]: [
-        ...prev[id],
-        {
-          id: crypto.randomUUID(),
-          title,
-          description: title
-        }
-      ]
-    }));
+  const handleAddCard = (columnId: string, data: string) => {
+    const id = createId("card-");
+
+    setBoard((draft) => {
+      draft.columns[columnId].cardIds.push(id);
+      draft.cards[id] = {
+        id,
+        data
+      };
+    });
+  };
+
+  const handleDeleteCard = (columnId: string, cardId: string) => {
+    setBoard((draft) => {
+      delete draft.cards[cardId];
+      draft.columns[columnId].cardIds = draft.columns[columnId].cardIds.filter(
+        (i) => i !== cardId
+      );
+    });
   };
 
   return (
     <DragDropProvider
       onDragOver={(event) => {
-        const { source } = event.operation;
-        if (!source) return;
-        if (source.type === "column") return;
-
-        setItems((items) => move(items, event));
+        setBoard((draft) => {
+          moveCardBetweenColumns(draft.columns, event);
+        });
+      }}
+      onDragEnd={(event) => {
+        setBoard((draft) => {
+          reorderColumns(draft.columnOrder, event);
+        });
       }}
     >
-      {Object.entries(items).map(([column, items], index) => (
+      {board.columnOrder.map((columnId, index) => (
         <KanbanColumn
-          key={column}
-          id={column}
+          key={columnId}
+          id={columnId}
           index={index}
-          totalTask={items.length}
-          onDelete={handleDeleteColumn}
+          title={board.columns[columnId].title}
+          totalTask={board.columns[columnId].cardIds.length}
           onAddCard={handleAddCard}
+          onDelete={handleDeleteColumn}
         >
-          {items.map((task, index) => (
+          {board.columns[columnId].cardIds.map((cardId, index) => (
             <KanbanCard
-              key={task.id}
-              id={task.id}
+              key={cardId}
+              id={cardId}
               index={index}
-              column={column}
-              task={task}
-              onDelete={handleCardDelete}
+              column={columnId}
+              data={board.cards[cardId].data}
+              onDelete={handleDeleteCard}
             />
           ))}
         </KanbanColumn>

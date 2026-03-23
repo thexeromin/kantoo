@@ -17,15 +17,17 @@ import AddCard from "./add-card";
 interface Props {
   id: string;
   index: number;
-  children: React.ReactNode;
+  title: string;
   totalTask: number;
-  onDelete: (title: string) => void;
-  onAddCard: (title: string, id: string) => void;
+  children: React.ReactNode;
+  onDelete: (id: string) => void;
+  onAddCard: (columnId: string, data: string) => void;
 }
 
 export default function KanbanColumn({
   id,
   index,
+  title,
   totalTask,
   onDelete,
   onAddCard,
@@ -42,10 +44,12 @@ export default function KanbanColumn({
   return (
     <div
       ref={ref}
-      className="flex w-80 shrink-0 flex-col rounded-xl bg-slate-100 p-4 dark:bg-gray-800"
+      className="flex w-80 shrink-0 flex-col rounded-xl bg-slate-100 p-4 dark:bg-gray-800 min-h-10"
     >
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-700 dark:text-white">{id}</h3>
+        <h3 className="font-semibold text-slate-700 dark:text-white">
+          {title}
+        </h3>
 
         <div className="flex items-center justify-between gap-1">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600 dark:bg-gray-700 dark:text-gray-200">
@@ -71,14 +75,14 @@ export default function KanbanColumn({
 
       <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-1">
         {children}
-
-        {totalTask === 0 && (
-          <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-sm text-slate-400 dark:border-gray-600 dark:text-gray-500">
-            No tasks yet
-          </div>
-        )}
-        <AddCard onAdd={(t: string) => onAddCard(t, id)} />
       </div>
+
+      {totalTask === 0 && (
+        <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-sm text-slate-400 dark:border-gray-600 dark:text-gray-500">
+          No tasks yet
+        </div>
+      )}
+      <AddCard onAdd={(data: string) => onAddCard(id, data)} />
     </div>
   );
 }
