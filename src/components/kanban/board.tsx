@@ -1,7 +1,11 @@
 import { useImmer } from "use-immer";
 import { DragDropProvider } from "@dnd-kit/react";
 import { createId } from "@/utils";
-import { reorderColumns, moveCardBetweenColumns } from "@/utils/boardHelpers";
+import {
+  handleColumnReorder,
+  handleCrossColumnCardMove,
+  handleSameColumnCardReorder
+} from "@/utils/boardHelpers";
 
 import type { Board } from "./types";
 
@@ -30,10 +34,18 @@ export default function KanbanBoard() {
   };
 
   const handleDeleteColumn = (id: string) => {
-    // TODO: remove the cards associated with this column
     setBoard((draft) => {
+      // delete cards too, since their column is gone
+      draft.columns[id].cardIds.forEach((cardId) => {
+        delete draft.cards[cardId];
+      });
+
       delete draft.columns[id];
-      draft.columnOrder = draft.columnOrder.filter((x) => x !== id);
+
+      // remove column from the ordering list
+      const colIndex = draft.columnOrder.indexOf(id);
+      if (colIndex === -1) return;
+      draft.columnOrder.splice(colIndex, 1);
     });
   };
 
@@ -62,12 +74,13 @@ export default function KanbanBoard() {
     <DragDropProvider
       onDragOver={(event) => {
         setBoard((draft) => {
-          moveCardBetweenColumns(draft.columns, event);
+          handleCrossColumnCardMove(draft, event);
         });
       }}
       onDragEnd={(event) => {
         setBoard((draft) => {
-          reorderColumns(draft.columnOrder, event);
+          handleSameColumnCardReorder(draft, event);
+          handleColumnReorder(draft, event);
         });
       }}
     >

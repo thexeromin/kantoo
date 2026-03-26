@@ -1,12 +1,29 @@
 import { hasSortableIndices } from "@/types/guards";
-import { arrayMove } from ".";
 import type { Draggable, Data } from "@dnd-kit/abstract";
-import type { Column } from "@/components/kanban/types";
+import type { Board, Column } from "@/components/kanban/types";
+import { arrayMove } from ".";
 
-export function moveCardBetweenColumns(
-  columns: Record<string, Column>,
-  event: any
-) {
+export function handleSameColumnCardReorder(draft: Board, event: any) {
+  const { source, target, canceled } = event.operation;
+
+  if (canceled) return;
+  if (source?.type !== "item" || target?.type !== "item") return;
+  if (!hasSortableIndices(source)) return;
+
+  const { initialIndex, index } = source;
+
+  if (index === initialIndex) return;
+  if (!source.data.columnId) return;
+
+  const cardIds = draft.columns[source.data.columnId].cardIds;
+
+  if (cardIds[index] === source.id) return;
+
+  const [movedCard] = cardIds.splice(initialIndex, 1);
+  cardIds.splice(index, 0, movedCard);
+}
+
+export function handleCrossColumnCardMove(draft: Board, event: any) {
   const { source, target, canceled } = event.operation;
 
   if (!source || !target || canceled || source.type === "column") return;
@@ -15,7 +32,7 @@ export function moveCardBetweenColumns(
   const sourceColId = source.data.columnId;
   const targetColId = (target.data.columnId || target.id) as string;
 
-  applyCardMove(columns, sourceCardId, sourceColId, targetColId);
+  applyCardMove(draft.columns, sourceCardId, sourceColId, targetColId);
 }
 
 function applyCardMove(
@@ -37,23 +54,23 @@ function applyCardMove(
   targetCol.cardIds.push(sourceCardId);
 }
 
-export function reorderColumns(columnOrder: string[], event: any) {
+export function handleColumnReorder(draft: Board, event: any) {
   const { source, target, canceled } = event.operation;
   if (!source || !target || canceled) return;
   if (source.type !== "column") return;
 
-  const sourceIndex = columnOrder.findIndex((col) => col === source.id);
-  const targetIndex = columnOrder.findIndex((col) => col === target.id);
+  const sourceIndex = draft.columnOrder.findIndex((col) => col === source.id);
+  const targetIndex = draft.columnOrder.findIndex((col) => col === target.id);
 
   const indicesAreInvalid =
     sourceIndex === -1 || targetIndex === -1 || targetIndex === sourceIndex;
 
   if (indicesAreInvalid) {
-    fallbackSortableReorder(columnOrder, source);
+    fallbackSortableReorder(draft.columnOrder, source);
     return;
   }
 
-  arrayMove(columnOrder, sourceIndex, targetIndex);
+  arrayMove(draft.columnOrder, sourceIndex, targetIndex);
 }
 
 function fallbackSortableReorder(
