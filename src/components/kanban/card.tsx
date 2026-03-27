@@ -34,20 +34,15 @@ export default function KanbanCard({
     <div
       ref={ref}
       data-dragging={isDragging}
-      className="group relative mb-3 flex cursor-grab flex-col gap-2 rounded-lg
-                 bg-white p-4 shadow-sm ring-1 ring-slate-200 transition-all
-                 hover:shadow-md hover:ring-blue-400 active:cursor-grabbing
-                 dark:bg-slate-700 dark:ring-slate-600 dark:hover:ring-blue-500"
+      className="mb-3 cursor-grab rounded-lg bg-white p-4 shadow-sm ring-1
+                 ring-slate-200 transition-all hover:shadow-md hover:ring-blue-400
+                 active:cursor-grabbing dark:bg-slate-700 dark:ring-slate-600
+                 dark:hover:ring-blue-500"
     >
-      <div className="flex items-start justify-between flex-row">
-        <div className="flex items-start justify-between flex-col">
-          <h4 className="font-medium text-slate-700 dark:text-white">{data}</h4>
-
-          <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-300">
-            {data}
-          </p>
-        </div>
-
+      <div className="flex justify-between">
+        <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-300">
+          {data}
+        </p>
         <Button
           onClick={() => column && id && onDelete(column, id)}
           variant="ghost"
