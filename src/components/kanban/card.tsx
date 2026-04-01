@@ -1,3 +1,5 @@
+import React from "react";
+
 import { useSortable } from "@dnd-kit/react/sortable";
 import { TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -10,13 +12,7 @@ interface Props {
   onDelete: (columnId: string, cardId: string) => void;
 }
 
-export default function KanbanCard({
-  id,
-  index,
-  column,
-  data,
-  onDelete
-}: Props) {
+function KanbanCard({ id, index, column, data, onDelete }: Props) {
   const { ref, isDragging } = useSortable({
     id,
     index,
@@ -24,9 +20,7 @@ export default function KanbanCard({
     accept: "item",
     group: column,
     data: {
-      columnId: column,
-      group: column, // ✅ inside data
-      initialGroup: column
+      columnId: column
     }
   });
 
@@ -54,3 +48,5 @@ export default function KanbanCard({
     </div>
   );
 }
+
+export default React.memo(KanbanCard);

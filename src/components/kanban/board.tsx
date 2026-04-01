@@ -1,89 +1,24 @@
-import { useImmer } from "use-immer";
 import { DragDropProvider } from "@dnd-kit/react";
-import { createId } from "@/utils";
-import {
-  handleColumnReorder,
-  handleCrossColumnCardMove,
-  handleSameColumnCardReorder
-} from "@/utils/boardHelpers";
-
-import type { Board } from "./types";
 
 import AddColumn from "./add-column";
 import KanbanCard from "./card";
 import KanbanColumn from "./column";
 
+import { useKanbanBoard } from "@/hooks";
+
 export default function KanbanBoard() {
-  const [board, setBoard] = useImmer<Board>({
-    columns: {},
-    columnOrder: [],
-    cards: {}
-  });
-
-  const handleAddColumn = (title: string) => {
-    const id = createId("col-");
-
-    setBoard((draft) => {
-      draft.columnOrder.push(id);
-      draft.columns[id] = {
-        id,
-        title,
-        cardIds: []
-      };
-    });
-  };
-
-  const handleDeleteColumn = (id: string) => {
-    setBoard((draft) => {
-      // delete cards too, since their column is gone
-      draft.columns[id].cardIds.forEach((cardId) => {
-        delete draft.cards[cardId];
-      });
-
-      delete draft.columns[id];
-
-      // remove column from the ordering list
-      const colIndex = draft.columnOrder.indexOf(id);
-      if (colIndex === -1) return;
-      draft.columnOrder.splice(colIndex, 1);
-    });
-  };
-
-  const handleAddCard = (columnId: string, data: string) => {
-    const id = createId("card-");
-
-    setBoard((draft) => {
-      draft.columns[columnId].cardIds.push(id);
-      draft.cards[id] = {
-        id,
-        data
-      };
-    });
-  };
-
-  const handleDeleteCard = (columnId: string, cardId: string) => {
-    setBoard((draft) => {
-      delete draft.cards[cardId];
-      draft.columns[columnId].cardIds = draft.columns[columnId].cardIds.filter(
-        (i) => i !== cardId
-      );
-    });
-  };
+  const {
+    board,
+    handleAddCard,
+    handleAddColumn,
+    handleDeleteCard,
+    handleDeleteColumn,
+    handleDragOver,
+    handleDragEnd
+  } = useKanbanBoard();
 
   return (
-    <DragDropProvider
-      onDragOver={(event) => {
-        setBoard((draft) => {
-          handleCrossColumnCardMove(draft, event);
-        });
-      }}
-      onDragEnd={(event) => {
-        setBoard((draft) => {
-          handleSameColumnCardReorder(draft, event);
-          handleColumnReorder(draft, event);
-        });
-      }}
-    >
+    <DragDropProvider onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
       {board.columnOrder.map((columnId, index) => (
         <KanbanColumn
           key={columnId}
@@ -100,7 +35,7 @@ export default function KanbanBoard() {
               id={cardId}
               index={index}
               column={columnId}
-              data={board.cards[cardId].data}
+              data={board.cards[cardId]?.data || ""}
               onDelete={handleDeleteCard}
             />
           ))}

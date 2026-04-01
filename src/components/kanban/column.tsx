@@ -24,7 +24,7 @@ interface Props {
   onAddCard: (columnId: string, data: string) => void;
 }
 
-export default function KanbanColumn({
+function KanbanColumn({
   id,
   index,
   title,
@@ -86,3 +86,5 @@ export default function KanbanColumn({
     </div>
   );
 }
+
+export default React.memo(KanbanColumn);
