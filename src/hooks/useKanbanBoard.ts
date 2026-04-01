@@ -1,15 +1,18 @@
 import { useRef } from "react";
-import { useImmer } from "use-immer";
-import { createId } from "@/utils";
+import { useImmerReducer } from "use-immer";
 
-import type { Board } from "@/types/kanban";
-import type { DragEndPayload, DragOverPayload } from "@/types/kanban";
-
+import { boardReducer } from "@/reducers";
 import { getAction } from "@/components/kanban/board-action-parser";
-import { applyAction } from "@/components/kanban/board-mutations";
+
+import type {
+  Board,
+  BoardAction,
+  DragEndPayload,
+  DragOverPayload
+} from "@/types/board";
 
 export function useKanbanBoard() {
-  const [board, setBoard] = useImmer<Board>({
+  const [board, dispatch] = useImmerReducer<Board, BoardAction>(boardReducer, {
     columns: {},
     columnOrder: [],
     cards: {}
@@ -17,56 +20,36 @@ export function useKanbanBoard() {
   const previousBoard = useRef(board);
 
   function handleAddPreviousBoard(board: Board) {
-    previousBoard.current = board;
+    previousBoard.current = structuredClone(board);
   }
 
   function handleAddColumn(title: string) {
-    const id = createId("col-");
-
-    setBoard((draft) => {
-      draft.columnOrder.push(id);
-      draft.columns[id] = {
-        id,
-        title,
-        cardIds: []
-      };
+    dispatch({
+      type: "ADD_COLUMN",
+      title
     });
   }
 
   function handleDeleteColumn(id: string) {
-    setBoard((draft) => {
-      // delete cards too, since their column is gone
-      draft.columns[id].cardIds.forEach((cardId) => {
-        delete draft.cards[cardId];
-      });
-
-      delete draft.columns[id];
-
-      // remove column from the ordering list
-      const colIndex = draft.columnOrder.indexOf(id);
-      if (colIndex === -1) return;
-      draft.columnOrder.splice(colIndex, 1);
+    dispatch({
+      type: "DELETE_COLUMN",
+      id
     });
   }
 
   function handleAddCard(columnId: string, data: string) {
-    const id = createId("card-");
-
-    setBoard((draft) => {
-      draft.columns[columnId].cardIds.push(id);
-      draft.cards[id] = {
-        id,
-        data
-      };
+    dispatch({
+      type: "ADD_CARD",
+      columnId,
+      data
     });
   }
 
   function handleDeleteCard(columnId: string, cardId: string) {
-    setBoard((draft) => {
-      delete draft.cards[cardId];
-      draft.columns[columnId].cardIds = draft.columns[columnId].cardIds.filter(
-        (i) => i !== cardId
-      );
+    dispatch({
+      type: "DELETE_CARD",
+      columnId,
+      cardId
     });
   }
 
@@ -74,10 +57,8 @@ export function useKanbanBoard() {
     const action = getAction(event);
 
     if (action?.type === "MOVE_CARD") {
-      setBoard((draft) => {
-        // early return if already moved
-        if (draft.columns[action.toCol].cardIds.includes(action.cardId)) return;
-        applyAction(draft, action);
+      dispatch({
+        ...action
       });
     }
   }
@@ -85,7 +66,10 @@ export function useKanbanBoard() {
   function handleDragEnd(event: DragEndPayload) {
     if (event.canceled) {
       if (event.operation.source?.type === "item") {
-        setBoard(previousBoard.current);
+        dispatch({
+          type: "RESET_BOARD",
+          board: previousBoard.current
+        });
       }
 
       return;
@@ -94,8 +78,8 @@ export function useKanbanBoard() {
     const action = getAction(event);
 
     if (action && ["REORDER_CARD", "REORDER_COLUMN"].includes(action.type)) {
-      setBoard((draft) => {
-        applyAction(draft, action);
+      dispatch({
+        ...action
       });
     }
   }

@@ -1,10 +1,13 @@
-import type { Action } from "./board-actions";
 import { isSortable } from "@dnd-kit/react/sortable";
-import type { DragEndPayload, DragOverPayload } from "@/types/kanban";
+import type {
+  DragEndPayload,
+  DragOverPayload,
+  BoardAction
+} from "@/types/board";
 
 export function getAction(
   event: DragEndPayload | DragOverPayload
-): Action | null {
+): BoardAction | null {
   const { source, target, canceled } = event.operation;
 
   if (canceled || !source || !target) return null;
