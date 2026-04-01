@@ -13,12 +13,17 @@ export default function KanbanBoard() {
     handleAddColumn,
     handleDeleteCard,
     handleDeleteColumn,
+    handleAddPreviousBoard,
     handleDragOver,
     handleDragEnd
   } = useKanbanBoard();
 
   return (
-    <DragDropProvider onDragOver={handleDragOver} onDragEnd={handleDragEnd}>
+    <DragDropProvider
+      onDragStart={() => handleAddPreviousBoard(board)}
+      onDragOver={handleDragOver}
+      onDragEnd={handleDragEnd}
+    >
       {board.columnOrder.map((columnId, index) => (
         <KanbanColumn
           key={columnId}

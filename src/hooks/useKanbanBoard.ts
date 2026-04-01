@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useImmer } from "use-immer";
 import { createId } from "@/utils";
 
@@ -13,6 +14,11 @@ export function useKanbanBoard() {
     columnOrder: [],
     cards: {}
   });
+  const previousBoard = useRef(board);
+
+  function handleAddPreviousBoard(board: Board) {
+    previousBoard.current = board;
+  }
 
   function handleAddColumn(title: string) {
     const id = createId("col-");
@@ -77,6 +83,14 @@ export function useKanbanBoard() {
   }
 
   function handleDragEnd(event: DragEndPayload) {
+    if (event.canceled) {
+      if (event.operation.source?.type === "item") {
+        setBoard(previousBoard.current);
+      }
+
+      return;
+    }
+
     const action = getAction(event);
 
     if (action && ["REORDER_CARD", "REORDER_COLUMN"].includes(action.type)) {
@@ -92,6 +106,7 @@ export function useKanbanBoard() {
     handleAddColumn,
     handleDeleteCard,
     handleDeleteColumn,
+    handleAddPreviousBoard,
     handleDragOver,
     handleDragEnd
   };
