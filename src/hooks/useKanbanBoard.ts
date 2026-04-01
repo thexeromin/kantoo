@@ -2,6 +2,7 @@ import { useImmer } from "use-immer";
 import { createId } from "@/utils";
 
 import type { Board } from "@/types/kanban";
+import type { DragEndPayload, DragOverPayload } from "@/types/kanban";
 
 import { getAction } from "@/components/kanban/board-action-parser";
 import { applyAction } from "@/components/kanban/board-mutations";
@@ -63,7 +64,7 @@ export function useKanbanBoard() {
     });
   }
 
-  function handleDragOver(event: any) {
+  function handleDragOver(event: DragOverPayload) {
     const action = getAction(event);
 
     if (action?.type === "MOVE_CARD") {
@@ -75,7 +76,7 @@ export function useKanbanBoard() {
     }
   }
 
-  function handleDragEnd(event: any) {
+  function handleDragEnd(event: DragEndPayload) {
     const action = getAction(event);
 
     if (action && ["REORDER_CARD", "REORDER_COLUMN"].includes(action.type)) {

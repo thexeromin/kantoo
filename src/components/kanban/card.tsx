@@ -28,15 +28,10 @@ function KanbanCard({ id, index, column, data, onDelete }: Props) {
     <div
       ref={ref}
       data-dragging={isDragging}
-      className="mb-3 cursor-grab rounded-lg bg-white p-4 shadow-sm ring-1
-                 ring-slate-200 transition-all hover:shadow-md hover:ring-blue-400
-                 active:cursor-grabbing dark:bg-slate-700 dark:ring-slate-600
-                 dark:hover:ring-blue-500"
+      className="mb-3 cursor-grab rounded-lg bg-card p-4 shadow-sm ring-1 ring-border transition-all hover:shadow-md hover:ring-ring active:cursor-grabbing"
     >
-      <div className="flex justify-between">
-        <p className="line-clamp-2 text-sm text-slate-500 dark:text-slate-300">
-          {data}
-        </p>
+      <div className="flex justify-between gap-2">
+        <p className="line-clamp-2 text-sm text-card-foreground">{data}</p>
         <Button
           onClick={() => column && id && onDelete(column, id)}
           variant="ghost"

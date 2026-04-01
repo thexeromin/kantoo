@@ -14,7 +14,7 @@ export function ModeToggle() {
   return (
     <button
       onClick={toggleTheme}
-      className="group relative flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white hover:bg-slate-50 dark:border-slate-800 dark:bg-slate-950 dark:hover:bg-slate-900 transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+      className="group relative flex h-10 w-10 items-center justify-center rounded-lg border border-input bg-background hover:bg-accent hover:text-accent-foreground transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
       aria-label={`Current theme: ${theme}. Click to change.`}
     >
       {/* Sun Icon: Shown when theme is light */}
@@ -23,7 +23,7 @@ export function ModeToggle() {
           theme === "light"
             ? "scale-100 rotate-0 opacity-100"
             : "scale-0 -rotate-90 opacity-0 absolute"
-        } text-amber-500`}
+        } text-foreground`}
       />
 
       {/* Moon Icon: Shown when theme is dark */}
@@ -32,7 +32,7 @@ export function ModeToggle() {
           theme === "dark"
             ? "scale-100 rotate-0 opacity-100"
             : "scale-0 -rotate-90 opacity-0 absolute"
-        } text-blue-400`}
+        } text-foreground`}
       />
 
       {/* Laptop Icon: Shown when theme is system */}
@@ -41,11 +41,11 @@ export function ModeToggle() {
           theme === "system"
             ? "scale-100 rotate-0 opacity-100"
             : "scale-0 -rotate-90 opacity-0 absolute"
-        } text-slate-500`}
+        } text-foreground`}
       />
 
       {/* Tooltip hint (optional) */}
-      <span className="absolute -bottom-8 scale-0 transition-all group-hover:scale-100 text-[10px] font-medium px-2 py-1 rounded bg-slate-800 text-white capitalize">
+      <span className="absolute -bottom-8 scale-0 transition-all group-hover:scale-100 text-[10px] font-medium px-2 py-1 rounded bg-popover text-popover-foreground border border-border shadow-md capitalize">
         {theme}
       </span>
     </button>

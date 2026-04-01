@@ -44,15 +44,13 @@ function KanbanColumn({
   return (
     <div
       ref={ref}
-      className="flex w-80 shrink-0 flex-col rounded-xl bg-slate-100 p-4 dark:bg-gray-800 min-h-10"
+      className="flex w-80 shrink-0 flex-col rounded-xl bg-muted/50 p-4 min-h-10"
     >
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="font-semibold text-slate-700 dark:text-white">
-          {title}
-        </h3>
+        <h3 className="font-semibold text-foreground">{title}</h3>
 
         <div className="flex items-center justify-between gap-1">
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-slate-200 text-sm font-medium text-slate-600 dark:bg-gray-700 dark:text-gray-200">
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-sm font-medium text-secondary-foreground">
             {totalTask}
           </span>
           <DropdownMenu>
@@ -78,7 +76,7 @@ function KanbanColumn({
       </div>
 
       {totalTask === 0 && (
-        <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-slate-300 text-sm text-slate-400 dark:border-gray-600 dark:text-gray-500">
+        <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-border text-sm text-muted-foreground">
           No tasks yet
         </div>
       )}
