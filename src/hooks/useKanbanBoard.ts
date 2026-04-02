@@ -1,4 +1,4 @@
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 
 import { boardReducer } from "@/reducers";
@@ -11,12 +11,30 @@ import type {
   DragOverPayload
 } from "@/types/board";
 
+const LOCAL_STORAGE_PREFIX = "kantoo-";
+const BOARD_STATE_KEY = `${LOCAL_STORAGE_PREFIX}board-state`;
+
+function initializeBoard(defaultState: Board): Board {
+  try {
+    const persistedState = localStorage.getItem(BOARD_STATE_KEY);
+    return persistedState
+      ? (JSON.parse(persistedState) as Board)
+      : defaultState;
+  } catch {
+    return defaultState; // fallback if JSON is corrupted
+  }
+}
+
 export function useKanbanBoard() {
-  const [board, dispatch] = useImmerReducer<Board, BoardAction>(boardReducer, {
-    columns: {},
-    columnOrder: [],
-    cards: {}
-  });
+  const [board, dispatch] = useImmerReducer<Board, BoardAction, Board>(
+    boardReducer,
+    {
+      columns: {},
+      columnOrder: [],
+      cards: {}
+    },
+    initializeBoard
+  );
   const previousBoard = useRef(board);
 
   function handleAddPreviousBoard(board: Board) {
@@ -83,6 +101,10 @@ export function useKanbanBoard() {
       });
     }
   }
+
+  useEffect(() => {
+    localStorage.setItem(BOARD_STATE_KEY, JSON.stringify(board));
+  }, [board]);
 
   return {
     board,
