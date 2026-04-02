@@ -24,8 +24,8 @@ export type BoardAction =
   | { type: "REORDER_CARD"; columnId: string; from: number; to: number }
   | { type: "MOVE_CARD"; fromCol: string; toCol: string; cardId: string }
   | { type: "REORDER_COLUMN"; from: number; to: number }
-  | { type: "ADD_COLUMN"; title: string }
+  | { type: "ADD_COLUMN"; id: string; title: string }
   | { type: "DELETE_COLUMN"; id: string }
-  | { type: "ADD_CARD"; columnId: string; data: string }
+  | { type: "ADD_CARD"; id: string; columnId: string; data: string }
   | { type: "DELETE_CARD"; columnId: string; cardId: string }
   | { type: "RESET_BOARD"; board: Board };

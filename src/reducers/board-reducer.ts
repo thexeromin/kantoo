@@ -1,6 +1,5 @@
 import type { Board } from "@/types/board";
 import type { BoardAction } from "@/types/board";
-import { createId } from "@/utils";
 
 export function boardReducer(draft: Board, action: BoardAction) {
   switch (action.type) {
@@ -38,8 +37,7 @@ export function boardReducer(draft: Board, action: BoardAction) {
     }
 
     case "ADD_COLUMN": {
-      const id = createId("col-");
-      const { title } = action;
+      const { title, id } = action;
 
       draft.columnOrder.push(id);
       draft.columns[id] = {
@@ -67,8 +65,7 @@ export function boardReducer(draft: Board, action: BoardAction) {
     }
 
     case "ADD_CARD": {
-      const id = createId("card-");
-      const { data } = action;
+      const { id, data } = action;
 
       draft.columns[action.columnId].cardIds.push(id);
       draft.cards[id] = {

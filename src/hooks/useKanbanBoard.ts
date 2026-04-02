@@ -1,6 +1,7 @@
 import { useRef, useEffect } from "react";
 import { useImmerReducer } from "use-immer";
 
+import { createId } from "@/utils";
 import { boardReducer } from "@/reducers";
 import { getAction } from "@/components/kanban/board-action-parser";
 
@@ -42,8 +43,11 @@ export function useKanbanBoard() {
   }
 
   function handleAddColumn(title: string) {
+    const id = createId("col-");
+
     dispatch({
       type: "ADD_COLUMN",
+      id,
       title
     });
   }
@@ -56,8 +60,11 @@ export function useKanbanBoard() {
   }
 
   function handleAddCard(columnId: string, data: string) {
+    const id = createId("card-");
+
     dispatch({
       type: "ADD_CARD",
+      id,
       columnId,
       data
     });
