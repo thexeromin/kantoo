@@ -1,4 +1,4 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useImmerReducer } from "use-immer";
 
 import { createId } from "@/utils";
@@ -42,41 +42,53 @@ export function useKanbanBoard() {
     previousBoard.current = structuredClone(board);
   }
 
-  function handleAddColumn(title: string) {
-    const id = createId("col-");
+  const handleAddColumn = useCallback(
+    (title: string) => {
+      const id = createId("col-");
 
-    dispatch({
-      type: "ADD_COLUMN",
-      id,
-      title
-    });
-  }
+      dispatch({
+        type: "ADD_COLUMN",
+        id,
+        title
+      });
+    },
+    [dispatch]
+  );
 
-  function handleDeleteColumn(id: string) {
-    dispatch({
-      type: "DELETE_COLUMN",
-      id
-    });
-  }
+  const handleDeleteColumn = useCallback(
+    (id: string) => {
+      dispatch({
+        type: "DELETE_COLUMN",
+        id
+      });
+    },
+    [dispatch]
+  );
 
-  function handleAddCard(columnId: string, data: string) {
-    const id = createId("card-");
+  const handleAddCard = useCallback(
+    (columnId: string, data: string) => {
+      const id = createId("card-");
 
-    dispatch({
-      type: "ADD_CARD",
-      id,
-      columnId,
-      data
-    });
-  }
+      dispatch({
+        type: "ADD_CARD",
+        id,
+        columnId,
+        data
+      });
+    },
+    [dispatch]
+  );
 
-  function handleDeleteCard(columnId: string, cardId: string) {
-    dispatch({
-      type: "DELETE_CARD",
-      columnId,
-      cardId
-    });
-  }
+  const handleDeleteCard = useCallback(
+    (columnId: string, cardId: string) => {
+      dispatch({
+        type: "DELETE_CARD",
+        columnId,
+        cardId
+      });
+    },
+    [dispatch]
+  );
 
   function handleDragOver(event: DragOverPayload) {
     const action = getAction(event);

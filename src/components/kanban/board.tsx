@@ -1,7 +1,6 @@
 import { DragDropProvider } from "@dnd-kit/react";
 
 import AddColumn from "./add-column";
-import KanbanCard from "./card";
 import KanbanColumn from "./column";
 
 import { useKanbanBoard } from "@/hooks";
@@ -29,22 +28,13 @@ export default function KanbanBoard() {
           key={columnId}
           id={columnId}
           index={index}
-          title={board.columns[columnId].title}
-          totalTask={board.columns[columnId].cardIds.length}
+          column={board.columns[columnId]}
+          cardIds={board.columns[columnId].cardIds}
+          cards={board.cards}
           onAddCard={handleAddCard}
           onDelete={handleDeleteColumn}
-        >
-          {board.columns[columnId].cardIds.map((cardId, index) => (
-            <KanbanCard
-              key={cardId}
-              id={cardId}
-              index={index}
-              column={columnId}
-              data={board.cards[cardId]?.data || ""}
-              onDelete={handleDeleteCard}
-            />
-          ))}
-        </KanbanColumn>
+          onDeleteCard={handleDeleteCard}
+        />
       ))}
 
       <AddColumn onAdd={handleAddColumn} />

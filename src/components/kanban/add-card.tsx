@@ -5,7 +5,7 @@ interface Props {
   onAdd: (data: string) => void;
 }
 
-export default function AddCard({ onAdd }: Props) {
+function AddCard({ onAdd }: Props) {
   const [shouldAdd, setShouldAdd] = useState(false);
   const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -74,3 +74,5 @@ export default function AddCard({ onAdd }: Props) {
     </div>
   );
 }
+
+export default React.memo(AddCard);
