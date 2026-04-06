@@ -1,11 +1,14 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Plus, X } from "lucide-react";
+import { useBoardStore } from "@/store/board";
+import { createId } from "@/utils";
 
 interface Props {
-  onAdd: (data: string) => void;
+  columnId: string;
 }
 
-function AddCard({ onAdd }: Props) {
+function AddCard({ columnId }: Props) {
+  const addCard = useBoardStore((state) => state.addCard);
   const [shouldAdd, setShouldAdd] = useState(false);
   const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +23,8 @@ function AddCard({ onAdd }: Props) {
   const handleSubmit = (e?: React.SubmitEvent) => {
     e?.preventDefault();
     if (title.trim()) {
-      onAdd(title);
+      const id = createId("card-");
+      addCard(id, columnId, title);
       setTitle("");
     }
   };

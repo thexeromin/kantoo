@@ -1,26 +1,26 @@
-import React from "react";
-
 import { useSortable } from "@dnd-kit/react/sortable";
 import { TrashIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useBoardStore } from "@/store/board";
 
 interface Props {
   id: string;
   index: number;
-  column: string;
-  data: string;
-  onDelete: (columnId: string, cardId: string) => void;
+  columnId: string;
 }
 
-function KanbanCard({ id, index, column, data, onDelete }: Props) {
+function KanbanCard({ id, index, columnId }: Props) {
+  const card = useBoardStore((state) => state.cards[id]);
+  const handleDeleteCard = useBoardStore((state) => state.deleteCard);
+
   const { ref, isDragging } = useSortable({
     id,
     index,
     type: "item",
     accept: "item",
-    group: column,
+    group: columnId,
     data: {
-      columnId: column
+      columnId: columnId
     }
   });
 
@@ -31,9 +31,9 @@ function KanbanCard({ id, index, column, data, onDelete }: Props) {
       className="mb-3 cursor-grab rounded-lg bg-card p-4 shadow-sm ring-1 ring-border transition-all hover:shadow-md hover:ring-ring active:cursor-grabbing"
     >
       <div className="flex justify-between gap-2">
-        <p className="line-clamp-2 text-sm text-card-foreground">{data}</p>
+        <p className="line-clamp-2 text-sm text-card-foreground">{card.data}</p>
         <Button
-          onClick={() => column && id && onDelete(column, id)}
+          onClick={() => columnId && id && handleDeleteCard(id, columnId)}
           variant="ghost"
           size="icon"
         >
@@ -44,4 +44,4 @@ function KanbanCard({ id, index, column, data, onDelete }: Props) {
   );
 }
 
-export default React.memo(KanbanCard);
+export default KanbanCard;

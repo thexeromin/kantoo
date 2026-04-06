@@ -1,1 +1,1 @@
-export * from "./useKanbanBoard";
+export * from "./useBoardDrag";

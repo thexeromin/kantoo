@@ -1,11 +1,10 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Plus, X } from "lucide-react";
+import { useBoardStore } from "@/store/board";
+import { createId } from "@/utils";
 
-interface Props {
-  onAdd: (title: string) => void;
-}
-
-export default function AddColumn({ onAdd }: Props) {
+export default function AddColumn() {
+  const addColumn = useBoardStore((state) => state.addColumn);
   const [shouldAdd, setShouldAdd] = useState(false);
   const [title, setTitle] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,7 +19,8 @@ export default function AddColumn({ onAdd }: Props) {
   const handleSubmit = (e?: React.SubmitEvent) => {
     e?.preventDefault();
     if (title.trim()) {
-      onAdd(title);
+      const id = createId("col-");
+      addColumn(id, title);
       setTitle("");
     }
   };

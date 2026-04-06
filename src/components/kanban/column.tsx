@@ -1,44 +1,21 @@
-import React, { useCallback } from "react";
+import React from "react";
+import { TrashIcon } from "lucide-react";
 import { CollisionPriority } from "@dnd-kit/abstract";
 import { useSortable } from "@dnd-kit/react/sortable";
-import { EllipsisIcon } from "lucide-react";
+import { useBoardStore } from "@/store/board";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuGroup,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 import KanbanCard from "./card";
 import AddCard from "./add-card";
-
-import type { Card, Column } from "@/types/board";
 
 interface Props {
   id: string;
   index: number;
-  column: Column;
-  cardIds: string[];
-  // TODO: all cards passing
-  cards: Record<string, Card>;
-  onDelete: (id: string) => void;
-  onDeleteCard: (columnId: string, cardId: string) => void;
-  onAddCard: (columnId: string, data: string) => void;
 }
 
-function KanbanColumn({
-  id,
-  index,
-  column,
-  cardIds,
-  cards,
-  onDelete,
-  onDeleteCard,
-  onAddCard
-}: Props) {
+function KanbanColumn({ id, index }: Props) {
+  const column = useBoardStore((state) => state.columns[id]);
+  const handleDeleteColumn = useBoardStore((state) => state.deleteColumn);
   const { ref } = useSortable({
     id,
     index,
@@ -46,11 +23,6 @@ function KanbanColumn({
     collisionPriority: CollisionPriority.Low,
     accept: ["item", "column"]
   });
-
-  const handleAdd = useCallback(
-    (data: string) => onAddCard(id, data),
-    [id, onAddCard]
-  );
 
   return (
     <div
@@ -62,46 +34,32 @@ function KanbanColumn({
 
         <div className="flex items-center justify-between gap-1">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-secondary text-sm font-medium text-secondary-foreground">
-            {cardIds.length}
+            {column.cardIds.length}
           </span>
-          <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <EllipsisIcon />
-              </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent>
-              <DropdownMenuGroup>
-                <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                <DropdownMenuItem onClick={() => onDelete(id)}>
-                  Delete
-                </DropdownMenuItem>
-              </DropdownMenuGroup>
-            </DropdownMenuContent>
-          </DropdownMenu>
+
+          <Button
+            onClick={() => handleDeleteColumn(id)}
+            variant="ghost"
+            size="icon"
+          >
+            <TrashIcon />
+          </Button>
         </div>
       </div>
 
-      {/* Render cards */}
       <div className="flex flex-1 flex-col overflow-y-auto overflow-x-hidden p-1">
-        {cardIds.map((id, index) => (
-          <KanbanCard
-            key={id}
-            id={id}
-            index={index}
-            column={column.id}
-            data={cards[id].data}
-            onDelete={onDeleteCard}
-          />
+        {column.cardIds.map((id, index) => (
+          <KanbanCard key={id} id={id} index={index} columnId={column.id} />
         ))}
       </div>
 
-      {cardIds.length === 0 && (
+      {column.cardIds.length === 0 && (
         <div className="flex h-24 mb-3 items-center justify-center rounded-lg border-2 border-dashed border-border text-sm text-muted-foreground">
           No tasks yet
         </div>
       )}
-      <AddCard onAdd={handleAdd} />
+
+      <AddCard columnId={id} />
     </div>
   );
 }
