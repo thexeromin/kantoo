@@ -48,6 +48,10 @@ That is a ~73% reduction in render time.
 - React + TypeScript
 - Zustand for state management with selective subscriptions
 
+## Contributing to the Ecosystem
+
+While building Kantoo, I discovered and fixed a JSDoc issue in [dnd kit](https://github.com/clauderic/dnd-kit), the drag-and-drop library powering this project. The fix was merged upstream: [PR #1954](https://github.com/clauderic/dnd-kit/pull/1954).
+
 ## Getting Started
 
 ```bash
