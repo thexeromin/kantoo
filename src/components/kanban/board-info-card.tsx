@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+// import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -21,10 +21,10 @@ interface Props {
   id: string;
   title: string;
   description: string;
-  lastActive: string;
-  theme: string;
-  isFavorite: boolean;
-  members: string[];
+  lastActive?: string;
+  theme?: string;
+  is_favorite: boolean;
+  // members: string[];
   taskCount: number;
 }
 
@@ -34,8 +34,8 @@ export default function BoardInfoCard({
   description,
   lastActive,
   theme,
-  isFavorite,
-  members,
+  is_favorite,
+  // members,
   taskCount
 }: Props) {
   return (
@@ -52,7 +52,7 @@ export default function BoardInfoCard({
             {taskCount} tasks
           </Badge>
           <div className="flex gap-1 -mt-1 -mr-2">
-            {isFavorite && (
+            {is_favorite && (
               <Button
                 variant="ghost"
                 size="icon"
@@ -94,22 +94,22 @@ export default function BoardInfoCard({
           <span className="text-xs">{lastActive}</span>
         </div>
 
-        <div className="flex -space-x-2">
-          {members.map((member, i) => (
+        {/*<div className="flex -space-x-2">
+          {members?.map((member, i) => (
             <Avatar key={i} className="h-7 w-7 border-2 border-background">
               <AvatarFallback className="bg-primary/10 text-primary text-[10px] font-medium">
                 {member}
               </AvatarFallback>
             </Avatar>
           ))}
-          {members.length > 3 && (
+          {members?.length > 3 && (
             <Avatar className="h-7 w-7 border-2 border-background">
               <AvatarFallback className="bg-muted text-muted-foreground text-[10px] font-medium">
                 +{members.length - 3}
               </AvatarFallback>
             </Avatar>
           )}
-        </div>
+        </div>*/}
       </CardFooter>
     </Card>
   );
