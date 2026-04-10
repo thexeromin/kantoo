@@ -1,3 +1,5 @@
+import { Link } from "react-router";
+
 import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 
@@ -16,9 +18,13 @@ export default function Navbar() {
       >
         Pricing
       </a>
-      <Button variant="ghost" className="hidden sm:inline-flex">
-        Log in
-      </Button>
+
+      <Link to="/login">
+        <Button variant="ghost" className="hidden sm:inline-flex">
+          Log in
+        </Button>
+      </Link>
+
       <Button>Get Started</Button>
       <ModeToggle />
     </nav>

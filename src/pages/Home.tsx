@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { ArrowRight, Sparkles, Users, Zap, ShieldCheck } from "lucide-react";
 
-export default function Home() {
+export default function HomePage() {
   return (
     <>
       {/* Hero Section */}
