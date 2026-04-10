@@ -1,11 +1,26 @@
+import { Button } from "@/components/ui/button";
 import { ModeToggle } from "./mode-toggle";
 
 export default function Navbar() {
   return (
-    <header className="flex items-center justify-between border-b border-border px-6 py-4">
-      <h1 className="text-2xl font-bold text-foreground">Kantoo</h1>
-
+    <nav className="ml-auto flex gap-4 sm:gap-6 items-center">
+      <a
+        className="text-sm font-medium hover:text-primary transition-colors"
+        href="#features"
+      >
+        Features
+      </a>
+      <a
+        className="text-sm font-medium hover:text-primary transition-colors"
+        href="#pricing"
+      >
+        Pricing
+      </a>
+      <Button variant="ghost" className="hidden sm:inline-flex">
+        Log in
+      </Button>
+      <Button>Get Started</Button>
       <ModeToggle />
-    </header>
+    </nav>
   );
 }
