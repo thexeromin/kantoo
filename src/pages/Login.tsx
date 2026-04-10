@@ -25,14 +25,15 @@ export default function LoginPage() {
       password: ""
     }
   });
-  const { mutate: signup, isPending } = useMutation({
+  const { mutateAsync: signup, isPending } = useMutation({
     mutationFn: authService.login,
     onSuccess: () => {
       navigate("/dashboard");
     },
     onError: (error: Error) => {
-      toast.error("Signup Failed", {
-        description: error.message
+      toast.error("Login Failed", {
+        description: error.message,
+        position: "top-center"
       });
     }
   });
