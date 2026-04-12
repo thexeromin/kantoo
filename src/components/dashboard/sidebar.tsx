@@ -43,7 +43,7 @@ export function Sidebar() {
             <Home className="h-4 w-4" /> Home
           </Link>
           <Link
-            to="#"
+            to="/dashboard"
             className="flex items-center gap-3 rounded-md bg-primary/10 px-3 py-2 text-primary transition-all"
           >
             <FolderKanban className="h-4 w-4" /> My Boards

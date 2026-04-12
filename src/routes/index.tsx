@@ -1,11 +1,12 @@
 import { createBrowserRouter, redirect, Outlet } from "react-router";
 import { supabase } from "@/lib/supabase";
 
-import PublicLayout from "@/layouts/PublicLayout";
+import { PrivateLayout, PublicLayout } from "@/layouts";
 import HomePage from "@/pages/Home";
 import SignupPage from "@/pages/Signup";
 import LoginPage from "@/pages/Login";
 import DashboardPage from "@/pages/Dashboard";
+import KanbanPage from "@/pages/Kanban";
 
 const requireAuth = async () => {
   const {
@@ -38,8 +39,11 @@ export const router = createBrowserRouter([
     ]
   },
   {
-    element: <Outlet />,
+    element: <PrivateLayout />,
     loader: requireAuth,
-    children: [{ path: "/dashboard", element: <DashboardPage /> }]
+    children: [
+      { path: "/dashboard", element: <DashboardPage /> },
+      { path: "/board/:boardId", element: <KanbanPage /> }
+    ]
   }
 ]);
